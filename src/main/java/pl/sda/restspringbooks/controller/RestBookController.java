@@ -2,6 +2,7 @@ package pl.sda.restspringbooks.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -87,6 +88,18 @@ public class RestBookController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/{id}/authors")
+    public ResponseEntity<List<String>> getBookAuthors(@RequestParam long id){
+        final Optional<Book> optionalBook = books
+                .stream()
+                .filter(b -> b.getId() == id)
+                .findFirst();
+        if (optionalBook.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(optionalBook.get().getAuthors());
     }
 
 
