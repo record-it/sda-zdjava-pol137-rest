@@ -18,6 +18,7 @@ public class RestBookController {
                     Book
                             .builder()
                             .id(1)
+                            .authors(List.of("Bloch", "Freeman"))
                             .title("Java")
                             .editionYear(2020)
                             .build(),
@@ -25,6 +26,7 @@ public class RestBookController {
                             .builder()
                             .id(2)
                             .title("Spring")
+                            .authors(List.of("Pivotal"))
                             .editionYear(2021)
                             .build()
             )
@@ -87,14 +89,5 @@ public class RestBookController {
         }
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, Object> handleValidationErrors(MethodArgumentNotValidException exception){
-        Map<String, Object> errors = new HashMap<>();
-        exception
-                .getBindingResult()
-                .getFieldErrors()
-                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-        return errors;
-    }
+
 }

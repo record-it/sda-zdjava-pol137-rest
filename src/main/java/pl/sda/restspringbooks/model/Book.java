@@ -5,6 +5,8 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
+import java.util.List;
+
 @Data
 @Builder
 public class Book {
@@ -15,4 +17,6 @@ public class Book {
 
     @Range(min = 2000, message = "Rok wydania nie może być mniejszy od 2000!")
     private int editionYear;
+
+    private List<String> authors;
 }
