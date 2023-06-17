@@ -19,7 +19,7 @@ public class RestBookController {
                     Book
                             .builder()
                             .id(1)
-                            .authors(List.of("Bloch", "Freeman"))
+                            .authors("Bloch|Freeman")
                             .title("Java")
                             .editionYear(2020)
                             .build(),
@@ -27,7 +27,7 @@ public class RestBookController {
                             .builder()
                             .id(2)
                             .title("Spring")
-                            .authors(List.of("Pivotal"))
+                            .authors("Pivotal")
                             .editionYear(2021)
                             .build()
             )
