@@ -1,7 +1,12 @@
 package pl.sda.restspringbooks.configuration;
 
+import org.springdoc.core.filters.GlobalOpenApiMethodFilter;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
@@ -13,7 +18,11 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-public class SecurityConfiguration {
+@EnableGlobalMethodSecurity(
+        jsr250Enabled = true,
+        securedEnabled = true
+)
+public class SecurityConfiguration extends GlobalMethodSecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -31,7 +40,10 @@ public class SecurityConfiguration {
                 .headers()
                 .and()
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/api/v1/**").hasRole("ADMIN")
+                        request
+                                .requestMatchers(HttpMethod.PUT,"/api/v1/books").hasAuthority("ROLE_USER")
+                                .requestMatchers(HttpMethod.GET, "/api/v1/**").hasAuthority("ROLE_USER")
+                                //.requestMatchers("/api/v1/**").hasRole("ADMIN")
                                 .anyRequest().permitAll()
                 )
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -40,7 +52,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(){
+    public UserDetailsService userDetailsService() {
         final UserDetails ewa = User
                 .builder()
                 .password(passwordEncoder().encode("1234"))
@@ -50,6 +62,12 @@ public class SecurityConfiguration {
                 .credentialsExpired(false)
                 .authorities("ROLE_ADMIN", "ROLE_USER")
                 .build();
-        return new InMemoryUserDetailsManager(ewa);
+        var karol = User
+                .builder()
+                .password(passwordEncoder().encode("abcd"))
+                .authorities("ROLE_USER")
+                .username("karol")
+                .build();
+        return new InMemoryUserDetailsManager(ewa, karol);
     }
 }
