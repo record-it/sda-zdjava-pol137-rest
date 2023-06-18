@@ -1,9 +1,6 @@
 package pl.sda.restspringbooks.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,13 +29,6 @@ public class Book {
     @Range(min = 2000, message = "Rok wydania nie może być mniejszy od 2000!")
     private int editionYear;
 
-    private String authors;
-
-    public List<String> getAuthors(){
-        return Arrays.stream(authors.split("\\|")).toList();
-    }
-
-    public void setAuthors(List<String> authors){
-        this.authors = authors.stream().collect(Collectors.joining("|"));
-    }
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    private List<Author> authors;
 }

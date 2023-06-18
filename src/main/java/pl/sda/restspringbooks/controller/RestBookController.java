@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import pl.sda.restspringbooks.model.Author;
 import pl.sda.restspringbooks.model.Book;
 
 import java.net.URI;
@@ -21,7 +22,6 @@ public class RestBookController {
                     Book
                             .builder()
                             .id(1)
-                            .authors("Bloch|Freeman")
                             .title("Java")
                             .editionYear(2020)
                             .build(),
@@ -29,7 +29,6 @@ public class RestBookController {
                             .builder()
                             .id(2)
                             .title("Spring")
-                            .authors("Pivotal")
                             .editionYear(2021)
                             .build()
             )
@@ -94,7 +93,7 @@ public class RestBookController {
     }
 
     @GetMapping("/{id}/authors")
-    public ResponseEntity<List<String>> getBookAuthors(@RequestParam long id){
+    public ResponseEntity<List<Author>> getBookAuthors(@RequestParam long id){
         final Optional<Book> optionalBook = books
                 .stream()
                 .filter(b -> b.getId() == id)
