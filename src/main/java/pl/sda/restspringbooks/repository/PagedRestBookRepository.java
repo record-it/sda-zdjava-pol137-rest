@@ -8,8 +8,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 import pl.sda.restspringbooks.model.Book;
 
-import java.util.Collection;
-
 @RepositoryRestResource(path = "books", collectionResourceRel = "books")
 public interface PagedRestBookRepository extends PagingAndSortingRepository<Book, Long> {
     // localhost:9000/books/search/edition?year=2000&sort=title
