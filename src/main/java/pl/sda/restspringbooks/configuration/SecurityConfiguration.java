@@ -20,7 +20,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableGlobalMethodSecurity(
         jsr250Enabled = true,
-        securedEnabled = true
+        securedEnabled = true,
+        prePostEnabled = true
 )
 public class SecurityConfiguration extends GlobalMethodSecurityConfiguration {
 

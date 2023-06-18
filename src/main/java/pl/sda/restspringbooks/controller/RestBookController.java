@@ -1,5 +1,6 @@
 package pl.sda.restspringbooks.controller;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -40,7 +41,7 @@ public class RestBookController {
     }
 
     @PostMapping("")
-    @Secured("ROLE_ADMIN")
+    @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity<Book> createBook(@Valid @RequestBody Book book){
         final OptionalLong max = books.stream().mapToLong(b -> b.getId()).max();
         book.setId(max.getAsLong() + 1);
