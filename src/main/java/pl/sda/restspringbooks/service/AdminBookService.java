@@ -1,6 +1,8 @@
 package pl.sda.restspringbooks.service;
 
 import org.springframework.data.domain.Page;
+import pl.sda.restspringbooks.dto.RequestAuthorDto;
+import pl.sda.restspringbooks.dto.RequestBookDto;
 import pl.sda.restspringbooks.model.Author;
 import pl.sda.restspringbooks.model.Book;
 import pl.sda.restspringbooks.repository.BookRepository;
@@ -19,7 +21,9 @@ public interface AdminBookService {
 
     void deleteBookById(long id);
 
-    Optional<Book> createBook(Book book);
+    Book createBook(RequestBookDto book);
+
+    Author createAuthor(RequestAuthorDto dto);
 
     void updateBook(Book book);
 }

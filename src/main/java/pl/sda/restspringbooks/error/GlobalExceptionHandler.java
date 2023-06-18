@@ -15,12 +15,21 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, Object> handleValidationErrors(MethodArgumentNotValidException exception){
+    public Map<String, Object> handleValidationErrors(MethodArgumentNotValidException exception) {
         Map<String, Object> errors = new HashMap<>();
         exception
                 .getBindingResult()
                 .getFieldErrors()
                 .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
         return errors;
+    }
+
+    @ExceptionHandler(UnknownAuthorException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleUnknownAuthorException(UnknownAuthorException e) {
+        return Map.of(
+                "error:", "Podano identyfikator nieistniejącego autora książki!",
+                "details:", e.getMessage()
+        );
     }
 }
