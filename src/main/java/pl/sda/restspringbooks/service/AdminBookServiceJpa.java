@@ -35,7 +35,7 @@ public class AdminBookServiceJpa implements AdminBookService{
 
     @Override
     public List<Author> findAllAuthors() {
-        return null;
+        return authorRepository.findAll();
     }
 
     @Override

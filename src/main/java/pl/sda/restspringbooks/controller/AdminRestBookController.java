@@ -11,7 +11,6 @@ import pl.sda.restspringbooks.service.AdminBookService;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/admin/books")
@@ -43,4 +42,8 @@ public class AdminRestBookController {
                 .build();
     }
 
+    @GetMapping("/authors")
+    public List<Author> getAllAuthors(){
+        return bookService.findAllAuthors();
+    }
 }
