@@ -1,6 +1,9 @@
 package pl.sda.restspringbooks.service;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.sda.restspringbooks.dto.RequestAuthorDto;
 import pl.sda.restspringbooks.dto.RequestBookDto;
@@ -30,7 +33,8 @@ public class AdminBookServiceJpa implements AdminBookService{
 
     @Override
     public Page<Book> findBookPage(int page, int size) {
-        return null;
+        Pageable pageRequest = PageRequest.of(page, size, Sort.by("title"));
+        return bookRepository.findAll(pageRequest);
     }
 
     @Override

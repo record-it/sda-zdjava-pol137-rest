@@ -1,8 +1,10 @@
 package pl.sda.restspringbooks.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.sda.restspringbooks.dto.PagingQuery;
 import pl.sda.restspringbooks.dto.RequestAuthorDto;
 import pl.sda.restspringbooks.dto.RequestBookDto;
 import pl.sda.restspringbooks.model.Author;
@@ -22,8 +24,8 @@ public class AdminRestBookController {
     }
 
     @GetMapping("")
-    public List<Book> allBooks(){
-        return bookService.findAllBooks();
+    public Page<Book> allBooks(PagingQuery pageQuery){
+        return bookService.findBookPage(pageQuery.getPage(), pageQuery.getSize());
     }
 
     @PostMapping("")
