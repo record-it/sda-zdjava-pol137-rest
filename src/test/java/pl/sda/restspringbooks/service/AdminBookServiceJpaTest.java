@@ -1,5 +1,6 @@
 package pl.sda.restspringbooks.service;
 
+import jdk.jshell.spi.ExecutionControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.sda.restspringbooks.dto.RequestBookDto;
+import pl.sda.restspringbooks.error.UnknownAuthorException;
 import pl.sda.restspringbooks.model.Author;
 import pl.sda.restspringbooks.model.Book;
 import pl.sda.restspringbooks.repository.AuthorRepository;
@@ -20,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(
@@ -47,7 +49,7 @@ class AdminBookServiceJpaTest {
             .build();
     Author testAuthor2 = Author
             .builder()
-            .id(1)
+            .id(2)
             .lastName("TEST2")
             .firstName("TEST2")
             .birthDate(LocalDate.of(1990,10,10))
@@ -72,6 +74,13 @@ class AdminBookServiceJpaTest {
             .title("NEW")
             .editionYear(2000)
             .authors(Collections.emptyList())
+            .build();
+
+    RequestBookDto requestBookDtoWithNonExistingAuthor = RequestBookDto
+            .builder()
+            .title("NEW")
+            .editionYear(2000)
+            .authors(List.of(3L))
             .build();
     @BeforeEach
     public void setup(){
@@ -100,6 +109,10 @@ class AdminBookServiceJpaTest {
                         .build()
         );
         bookService = new AdminBookServiceJpa(bookRepository, authorRepository);
+        // for shouldCreateBookThrowExceptionForNonExistingAuthor()
+        Mockito
+                .when(authorRepository.findAllById(requestBookDtoWithNonExistingAuthor.getAuthors()))
+                .thenReturn(Collections.emptyList());
     }
 
     @Test
@@ -118,8 +131,44 @@ class AdminBookServiceJpaTest {
     }
 
     @Test
-    void shouldCreateBookForEmptyAuthorsList(){
+    public void shouldCreateBookForEmptyAuthorsList(){
         final Book book = bookService.createBook(requestBookDtoEmptyAuthors);
         assertThat(book.getId()).isEqualTo(3);
+    }
+    @Test
+    public void shouldCreateBookThrowExceptionForNonExistingAuthor(){
+        assertThatThrownBy(() -> {
+            bookService.createBook(requestBookDtoWithNonExistingAuthor);
+        })
+                .isInstanceOf(UnknownAuthorException.class)
+                .hasMessage("Lista id nieznanych autorów: [3]");
+    }
+
+    @Test
+    public void shouldCreateBookThrowExceptionForMixedAuthors(){
+        RequestBookDto dto = RequestBookDto
+                .builder()
+                .title("")
+                .editionYear(2000)
+                .authors(List.of(1L, 2L, 3L))
+                .build();
+        Mockito
+                .when(authorRepository.findAllById(dto.getAuthors()))
+                .thenReturn(List.of(testAuthor1, testAuthor2));
+        final Throwable throwable = catchException(() ->
+            bookService.createBook(dto)
+        );
+        assertThat(throwable)
+                .isInstanceOf(UnknownAuthorException.class)
+                .hasMessage("Lista id nieznanych autorów: [3]");
+    }
+
+    @Test
+    public void shouldCreateBookForKnownAuthors(){
+        // zaimplementuje metodę testową dla znanych autorów
+        // przygotuj dto dla znanych autorów (1L, 2L)
+        // wykonaj mock dla metody findAllById()
+        // przygotuj obiekt Book dla metody save z listą autorów testAuthor1, testAuthor2
+        // wykonaj mock dla metody save
     }
 }

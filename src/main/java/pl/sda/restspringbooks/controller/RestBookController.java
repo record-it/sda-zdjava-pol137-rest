@@ -3,7 +3,6 @@ package pl.sda.restspringbooks.controller;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import pl.sda.restspringbooks.model.Author;
 import pl.sda.restspringbooks.model.Book;

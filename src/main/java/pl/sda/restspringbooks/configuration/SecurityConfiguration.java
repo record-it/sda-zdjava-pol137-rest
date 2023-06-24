@@ -42,9 +42,9 @@ public class SecurityConfiguration extends GlobalMethodSecurityConfiguration {
                 .and()
                 .authorizeHttpRequests(request ->
                         request
-                                .requestMatchers(HttpMethod.PUT,"/api/v1/books").hasAuthority("ROLE_USER")
-                                .requestMatchers(HttpMethod.GET, "/api/v1/**").hasAuthority("ROLE_USER")
-                                //.requestMatchers("/api/v1/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT,"/api/v1/admin/books").hasAuthority("ROLE_USER")
+                                .requestMatchers(HttpMethod.GET, "/api/v1/admin/**").hasAuthority("ROLE_USER")
+                                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                                 .anyRequest().permitAll()
                 )
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

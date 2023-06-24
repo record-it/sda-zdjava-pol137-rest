@@ -1,6 +1,7 @@
 package pl.sda.restspringbooks.service;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,8 +15,11 @@ import pl.sda.restspringbooks.model.Book;
 import pl.sda.restspringbooks.repository.AuthorRepository;
 import pl.sda.restspringbooks.repository.BookRepository;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminBookServiceJpa implements AdminBookService{
@@ -58,8 +62,10 @@ public class AdminBookServiceJpa implements AdminBookService{
         final List<Author> authors = authorRepository
                 .findAllById(dto.getAuthors());
         // wyznacz różnicę między listami, aby przekazać listę id tylko autorów spoza bazy
+        final Set<Long> collect = authors.stream().map(a -> a.getId()).collect(Collectors.toSet());
+        final List<Long> result = dto.getAuthors().stream().filter(id -> !collect.contains(id)).toList();
         if (dto.getAuthors().size() != authors.size()){
-            throw new UnknownAuthorException(dto.getAuthors());
+            throw new UnknownAuthorException(result);
         }
         return bookRepository.save(
                 Book
