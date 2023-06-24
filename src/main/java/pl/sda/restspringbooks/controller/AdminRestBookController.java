@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.sda.restspringbooks.configuration.AppConfiguration;
 import pl.sda.restspringbooks.dto.PagingQuery;
 import pl.sda.restspringbooks.dto.RequestAuthorDto;
 import pl.sda.restspringbooks.dto.RequestBookDto;
@@ -19,12 +20,22 @@ import java.util.List;
 public class AdminRestBookController {
     private final AdminBookService bookService;
 
-    public AdminRestBookController(AdminBookService bookService) {
+    private final AppConfiguration appConfiguration;
+
+    public AdminRestBookController(AdminBookService bookService, AppConfiguration appConfiguration) {
         this.bookService = bookService;
+        this.appConfiguration = appConfiguration;
     }
 
     @GetMapping("")
-    public Page<Book> allBooks(PagingQuery pageQuery){
+    public Page<Book> allBooks(@RequestParam(required = false) PagingQuery pageQuery){
+        if (pageQuery == null){
+            pageQuery = PagingQuery
+                    .builder()
+                    .page(appConfiguration.defaultPageNumber)
+                    .size(appConfiguration.defaultPageSize)
+                    .build();
+        }
         return bookService.findBookPage(pageQuery.getPage(), pageQuery.getSize());
     }
 
