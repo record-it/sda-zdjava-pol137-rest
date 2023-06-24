@@ -15,6 +15,7 @@ import pl.sda.restspringbooks.repository.BookRepository;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDate;
@@ -65,6 +66,41 @@ public class IntegrationRestSpringBooksAppTests {
                 .authors(List.of(author1, author2))
                 .build()
         );
+    }
+
+    @Test
+    public void shouldReturnCreatedStatusForAdminPostWithValidBook() throws Exception {
+        mvc.perform(
+                post("/api/v1/admin/books")
+                        .header("Authorization", "Basic ZXdhOjEyMzQ=")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                        {
+                        "title": "Java",
+                        "editionYear": 2001
+                        }
+                        """)
+        )
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"));
+    }
+
+    @Test
+    public void shouldReturnBadRequestForAdminPostWithInvalidBook() throws Exception {
+        //zaimplementuj metodę
+        mvc.perform(
+                        post("/api/v1/admin/books")
+                                .header("Authorization", "Basic ZXdhOjEyMzQ=")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                    {
+                                    "title": "",
+                                    "editionYear": 2000
+                                    }
+                                    """)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.title", is("Tytuł musi mieć od 2 do 50 znaków!")));
     }
 
     @Test

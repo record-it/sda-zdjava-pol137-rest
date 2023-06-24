@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -17,4 +18,8 @@ public class RequestBookDto {
     private int editionYear;
 
     private List<Long> authors;
+
+    public List<Long> getAuthors(){
+        return authors == null ? Collections.emptyList() : authors;
+    }
 }
