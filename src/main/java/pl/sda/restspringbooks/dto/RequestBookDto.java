@@ -1,5 +1,6 @@
 package pl.sda.restspringbooks.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
@@ -7,6 +8,7 @@ import org.hibernate.validator.constraints.Range;
 import java.util.List;
 
 @Data
+@Builder
 public class RequestBookDto {
     @Length(max = 50, min = 2, message = "Tytuł musi mieć od 2 do 50 znaków!")
     private String title;

@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import pl.sda.restspringbooks.dto.RequestBookDto;
 import pl.sda.restspringbooks.model.Author;
 import pl.sda.restspringbooks.model.Book;
 import pl.sda.restspringbooks.repository.AuthorRepository;
@@ -66,10 +67,38 @@ class AdminBookServiceJpaTest {
             .editionYear(2010)
             .build();
 
+    RequestBookDto requestBookDtoEmptyAuthors = RequestBookDto
+            .builder()
+            .title("NEW")
+            .editionYear(2000)
+            .authors(Collections.emptyList())
+            .build();
     @BeforeEach
     public void setup(){
+        // for shouldReturnListWithTwoBooks()
         Mockito.when(bookRepository.findAll()).thenReturn(List.of(testBook1, testBook2));
         Mockito.when(authorRepository.findAll()).thenReturn(List.of(testAuthor1, testAuthor2));
+        // for shouldReturnTestBook1ForIdOne()
+        Mockito.when(bookRepository.findById(1L)).thenReturn(Optional.of(testBook1));
+        Mockito.when(bookRepository.findById(2L)).thenReturn(Optional.of(testBook2));
+        // for shouldCreateBookForEmptyAuthorsList()
+        Mockito.when(authorRepository.findAllById(Collections.emptyList())).thenReturn(Collections.emptyList());
+        Mockito.when(bookRepository.save(
+                Book
+                        .builder()
+                        .authors(Collections.emptyList())
+                        .title(requestBookDtoEmptyAuthors.getTitle())
+                        .editionYear(requestBookDtoEmptyAuthors.getEditionYear())
+                        .build()
+        )).thenReturn(
+                Book
+                        .builder()
+                        .id(3)
+                        .authors(Collections.emptyList())
+                        .title(requestBookDtoEmptyAuthors.getTitle())
+                        .editionYear(requestBookDtoEmptyAuthors.getEditionYear())
+                        .build()
+        );
         bookService = new AdminBookServiceJpa(bookRepository, authorRepository);
     }
 
@@ -82,8 +111,15 @@ class AdminBookServiceJpaTest {
 
     @Test
     void shouldReturnTestBook1ForIdOne(){
-        final Optional<Book> optionalBook = bookService.findBookById(1L);
-        // wpisz assercje sprawdzającą , czy w optionalBook jest obiekt
+        final long  id = 1;
+        final Optional<Book> optionalBook = bookService.findBookById(id);
+        assertThat(optionalBook.isPresent()).isEqualTo(true);
+        assertThat(optionalBook.get().getId()).isEqualTo(id);
+    }
 
+    @Test
+    void shouldCreateBookForEmptyAuthorsList(){
+        final Book book = bookService.createBook(requestBookDtoEmptyAuthors);
+        assertThat(book.getId()).isEqualTo(3);
     }
 }

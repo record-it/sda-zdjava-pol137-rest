@@ -1,5 +1,6 @@
 package pl.sda.restspringbooks.service;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -44,12 +45,12 @@ public class AdminBookServiceJpa implements AdminBookService{
 
     @Override
     public Optional<Book> findBookById(long id) {
-        return Optional.empty();
+        return bookRepository.findById(id);
     }
 
     @Override
     public void deleteBookById(long id) {
-
+        throw new NotImplementedException();
     }
 
     @Override
@@ -85,6 +86,6 @@ public class AdminBookServiceJpa implements AdminBookService{
 
     @Override
     public void updateBook(Book book) {
-
+        throw new NotImplementedException();
     }
 }
