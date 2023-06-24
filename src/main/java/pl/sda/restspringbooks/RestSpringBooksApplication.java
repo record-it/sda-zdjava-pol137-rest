@@ -26,55 +26,6 @@ public class RestSpringBooksApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (bookRepository.count() < 1) {
-            bookRepository.saveAll(
-                    List.of(
-                            Book
-                                    .builder()
-                                    .title("AAA")
-                                    .editionYear(2020)
-                                    .authors(List.of(
-                                            Author
-                                                    .builder()
-                                                    .birthDate(LocalDate.of(1995, 10, 10))
-                                                    .firstName("Eva")
-                                                    .lastName("Freeman")
-                                                    .build()
-                                    ))
-                                    .build(),
-                            Book
-                                    .builder()
-                                    .title("BBB")
-                                    .editionYear(2000)
-                                    .authors(List.of(
-                                                    Author
-                                                            .builder()
-                                                            .birthDate(LocalDate.of(1990, 10, 10))
-                                                            .firstName("Adam")
-                                                            .lastName("Freeman")
-                                                            .build(),
-                                                    Author
-                                                            .builder()
-                                                            .birthDate(LocalDate.of(1986, 11, 11))
-                                                            .firstName("Karol")
-                                                            .lastName("May")
-                                                            .build()
-                                            )
-                                    )
-                                    .build()
-                    )
-            );
-//            final Book book = bookRepository.findById(1L).orElseThrow(() -> new RuntimeException("Brak takiej książki"));
-//            bookRepository.save(
-//                    Book
-//                            .builder()
-//                            .title("CCC")
-//                            .editionYear(2019)
-//                            .authors(
-//                                    book.getAuthors()
-//                            )
-//                            .build()
-//            );
-        }
+
     }
 }

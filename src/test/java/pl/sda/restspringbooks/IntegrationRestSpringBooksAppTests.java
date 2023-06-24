@@ -68,6 +68,17 @@ public class IntegrationRestSpringBooksAppTests {
     }
 
     @Test
+    public void shouldReturnPageWithOneBookForAdminGet() throws Exception {
+        mvc.perform(
+                get("/api/v1/admin/books?page=0&size=4")
+                        .header("Authorization", "Basic ZXdhOjEyMzQ=")
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].id", is((int)book.getId())));
+    }
+
+    @Test
     public void shouldReturnTwoBooksForPublicGet() throws Exception {
         mvc
                 .perform(
@@ -77,7 +88,40 @@ public class IntegrationRestSpringBooksAppTests {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].title", is("Java")));
+                .andExpect(jsonPath("$[0].title", is("Java")))
+                // dodaj test na tytuł drugiej książki - `Spring`
+                .andExpect(jsonPath("$[1].title", is("Spring")));
+    }
+
+    @Test
+    public void shouldReturnBookJavaForPublicGetWithIdOne() throws Exception {
+        mvc
+                .perform(
+                        get("/api/v1/books/1")
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)));
+    }
+
+    @Test
+    public void shouldReturnBadRequestForPublicGetWithInvalidId() throws Exception {
+        mvc
+                .perform(
+                        get("/api/v1/books/X")
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturnNotFoundForPublicGetWithNonExistingId() throws Exception {
+        mvc
+                .perform(
+                        get("/api/v1/books/4")
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isNotFound());
     }
 
 }

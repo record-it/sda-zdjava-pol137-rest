@@ -27,6 +27,6 @@ public class Book {
 
     private int editionYear;
 
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Author> authors;
 }

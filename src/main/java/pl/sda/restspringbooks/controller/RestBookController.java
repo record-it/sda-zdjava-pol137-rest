@@ -2,6 +2,7 @@ package pl.sda.restspringbooks.controller;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sda.restspringbooks.model.Author;
@@ -15,6 +16,7 @@ import java.util.OptionalLong;
 
 @RestController
 @RequestMapping("/api/v1/books")
+@Profile("test")
 public class RestBookController {
     private List<Book> books = new ArrayList<>(
             List.of(
